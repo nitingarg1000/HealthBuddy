@@ -48,112 +48,226 @@
                 </div>
                 <div class="panel-body">
                     <ul class="nav nav-tabs">
-                        <li class="active"><a href="#pres" data-toggle="tab">Add prescription</a></li>
-                        <li><a href="#his" data-toggle="tab">Patient History</a></li>
+                        <li class="active"><a href="#pres" data-toggle="tab">Tests</a></li>
                         <li><a href="#prof" data-toggle="tab">Patient Profile</a></li>
                     </ul>
                     <div class="tab-content">
+
+                        <!--prescription body-->
                         <div class="tab-pane fade in active" id="pres">
                             <br>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div class="panel panel-primary">
-                                        <div class="panel-heading">
-                                            <h6 class="panel-title">Prescription &nbsp;&nbsp; <a href="{%url 'Doctor:create_prescription' patient.rollNo%}"><span class="glyphicon glyphicon-refresh" align="left"></span></a></h6>
-                                        </div>
+
                                         <div class="panel-body" style="display: block;">
-                                            <form id="pres_form"  action="{% if pres %} {% url 'Doctor:save_pres' patient.rollNo pres.id %} {%else%} {% url 'Doctor:save_pres_new' patient.rollNo %} {%endif%}" method="post" enctype="multipart/form-data">
+                                            <form id="testpres_form"  action="{% if testpres %} {% url 'seven:change_testpres' pres.id testpres.id %} {%else%} {% url 'seven:create_testpres' pres.id %} {%endif%}" method="post" enctype="multipart/form-data">
                                                 {% csrf_token %}
                                                 {% if error_message or med_form.non_field_errors or pres_form.non_field_errors%}
                                                 <div class="alert alert-warning">
                                                     <p>{{ med_form.non_field_errors }}</p>
                                                     <p>{{ pres_form.non_field_errors }}</p>
                                                     <p><strong>{{ error_message }}</strong></p>
-
                                                 </div>
                                                 {% endif %}
 
                                                     <div class="row">
                                                         <div class="col-md-12">
-                                                            <div class="panel panel-info">
-                                                                <div class="panel-heading">
-                                                                    <h6 class="panel-title">Medicine</h6>
-                                                                </div>
-                                                                <div class="panel-body" style="display: block;">
-                                                                    <div class="form-group col-sm-3">
-                                                                        <div class="fieldWrapper">
-                                                                            {{ med_form.medicine.errors }}
-                                                                            <label for="{{ med_form.medicine.id_for_label }}" class="req">Medicine</label><br>
-                                                                            {{ med_form.medicine }}
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="form-group col-sm-3">
-                                                                        <div class="fieldWrapper">
-                                                                            {{ med_form.times_a_day.errors }}
-                                                                            <label for="{{ med_form.times_a_day.id_for_label }}" class="req">Times a day</label><br>
-                                                                            {{ med_form.times_a_day }}
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="form-group col-sm-3">
-                                                                        <div class="fieldWrapper">
-                                                                            {{ med_form.no_of_days.errors }}
-                                                                            <label for="{{ med_form.no_of_days.id_for_label }}" class="req">No of days</label><br>
-                                                                            {{ med_form.no_of_days }}
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="form-group col-sm-2">
-                                                                        <div class="fieldWrapper">
-                                                                            {{ med_form.when_to_take.errors }}
-                                                                            <label for="{{ med_form.when_to_take.id_for_label }}" class="req">When to take</label><br>
-                                                                            {{ med_form.when_to_take }}
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="form-group col-sm-1">
-                                                                        <br>
-                                                                        <button align="right" value="Add" type="submit" form="pres_form" formaction="{% if pres %} {% url 'Doctor:change_prescription' patient.rollNo pres.id %} {%else%} {% url 'Doctor:create_prescription' patient.rollNo %} {%endif%}" formmethod="post" formenctype="multipart/form-data" class="btn btn-success"><span class='glyphicon glyphicon-plus'></span></button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                                                          <div class="panel panel-primary">
+                                                              <div class="panel-heading">
+                                                                  <h6 class="panel-title">Prescription</h6>
+                                                              </div>
+                                                              <div class="panel-body" style="display: block;">
+                                                                      {% if error_message%}
+                                                                      <div class="alert alert-warning">
+                                                                          <p><strong>{{ error_message }}</strong></p>
+                                                                      </div>
+                                                                      {% endif %}
+                                                                      <div class="row">
+                                                                          <div class="col-md-6">
+                                                                              <table style="border-color: white; width:100%;" class="table table-responsive" align="center">
+                                                                                  <tr style="border-color: white;">
+                                                                                      <td  style="border-color: white;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                                                                      <td style="border-color: white; align:left;"><b>Patient</b></td>
+                                                                                      <td  style="border-color: white;">{{patient.user.first_name}} {{patient.user.last_name}}</td>
+                                                                                      <td  style=" border-color: white;"></td>
+                                                                                  </tr>
+                                                                                  <tr style="border-color: white;">
+                                                                                      <td  style="border-color: white;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                                                                      <td style="border-color: white; align:left;"><b>Treatment for</b></td>
+                                                                                      <td  style="border-color: white;">{%if pres.treatmentFor%}{{pres.treatmentFor}}{%else%}NA{%endif%}</td>
+                                                                                      <td  style=" border-color: white;"></td>
+                                                                                  </tr>
+                                                                                  <tr style="border-color: white;">
+                                                                                      <td  style="border-color: white;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                                                                      <td style="border-color: white; align:left;"><b>Remarks</b></td>
+                                                                                      <td  style="border-color: white;">{%if pres.remarks%}{{pres.remarks}}{%else%}NA{%endif%}</td>
+                                                                                      <td  style=" border-color: white;"></td>
+                                                                                  </tr>
+                                                                                  <tr style="border-color: white;">
+                                                                                      <td  style="border-color: white;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                                                                      <td style="border-color: white; align:left;"><b>Room no 7</b></td>
+                                                                                      <td  style="border-color: white;">{%if pres.roomNo7%}{{pres.roomNo7}}{%else%}NA{%endif%}</td>
+                                                                                      <td  style=" border-color: white;"></td>
+                                                                                  </tr>
+                                                                              </table>
+                                                                          </div>
+                                                                          <div class="col-md-6">
+                                                                              <table style="border-color: white; width:100%;" class="table table-responsive" align="center">
+                                                                                  <tr style="border-color: white;">
+                                                                                      <td  style="border-color: white;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                                                                      <td style="border-color: white; align:left;"><b>Doctor</b></td>
+                                                                                      <td  style="border-color: white;">Dr {{pres.doctor.user.first_name}} {{pres.doctor.user.last_name}}</td>
+                                                                                      <td  style=" border-color: white;"></td>
+                                                                                  </tr>
+                                                                                  <tr style="border-color: white;">
+                                                                                      <td  style="border-color: white;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                                                                      <td style="border-color: white; align:left;"><b>Date</b></td>
+                                                                                      <td  style="border-color: white;">{{pres.date}}</td>
+                                                                                      <td  style=" border-color: white;"></td>
+                                                                                  </tr>
+                                                                                  <tr style="border-color: white;">
+                                                                                      <td  style="border-color: white;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                                                                      <td style="border-color: white; align:left;"><b>Tests</b></td>
+                                                                                      {%if pres.testpres_set.all %}
+                                                                                      <td  style="border-color: white;">{%for t in pres.testpres_set.all %}{{ t.test }}<br>{%endfor%}</td>
+                                                                                      <td  style="border-color: white;">{%for t in pres.testpres_set.all %}{{ t.value }}<br>{%endfor%}</td>
+                                                                                      {%else%}
+                                                                                      <td>NA</td>
+                                                                                      {%endif%}
+                                                                                  </tr>
+                                                                              </table>
+                                                                          </div>
+                                                                      </div>
+                                                                      <div class="row">
+                                                                          <div class="col-md-12">
+                                                                              <div class="panel panel-info">
+                                                                                  <div class="panel-heading">
+                                                                                      <h6 class="panel-title">Medicines</h6>
+                                                                                  </div>
+                                                                                  <div class="panel-body" style="display: block;">
+                                                                                      <div class="form-group">
+                                                                                          <table class="table table-success">
+                                                                                              <thead>
+                                                                                                  <tr class="table-success">
+                                                                                                      <th></th>
+                                                                                                      <th>Medicine</th>
+                                                                                                      <th>Times a day</th>
+                                                                                                      <th>No of days</th>
+                                                                                                      <th>When to take</th>
+                                                                                                  </tr>
+                                                                                              </thead>
+                                                                                              {% if med %}
+                                                                                              <tbody>
+                                                                                                  {%for m in med %}
+                                                                                                  <tr>
+                                                                                                      <th>{{ forloop.counter }}.</th>
+                                                                                                      <th>{{m.medicine}}</th>
+                                                                                                      <td>{{m.times_a_day}}</td>
+                                                                                                      <td>{{m.no_of_days}}</td>
+                                                                                                      <td>{{m.when_to_take}}</td>
+                                                                                                  </tr>
+                                                                                              {% endfor %}
+                                                                                              </tbody>
+                                                                                              {%endif%}
+                                                                                          </table>
+                                                                                      </div>
+                                                                                  </div>
+                                                                              </div>
+                                                                          </div>
+
+                                                                      </div>
+                                                            <div class="row">
+                                                              <div class="col-md-12">
+                                                              <div class="panel panel-info">
+                                                                  <div class="panel-heading">
+                                                                      <h6 class="panel-title">Tests</h6>
+                                                                  </div>
+                                                                  <div class="panel-body" style="display: block;">
+                                                                      <div class="form-group col-sm-4">
+                                                                          <div class="fieldWrapper">
+                                                                              {{ testpres_form.test.errors }}
+                                                                              <label for="{{ testpres_form.test.id_for_label }}" class="req">Test</label><br>
+                                                                              {{ testpres_form.test }}
+                                                                          </div>
+                                                                      </div>
+                                                                      <div class="form-group col-sm-3">
+                                                                          <div class="fieldWrapper">
+                                                                              {{ testpres_form.value.errors }}
+                                                                              <label for="{{ testpres_form.value.id_for_label }}" class="req">Result</label><br>
+                                                                              {{ testpres_form.value }}
+                                                                          </div>
+                                                                      </div>
+                                                                      <div class="form-group col-sm-1">
+                                                                          <br>
+                                                                          <button align="right"
+                                                                                  value="Add"
+                                                                                  type="submit"
+                                                                                  form="testpres_form"
+                                                                                  formaction="{% url 'seven:create_testpres' pres.id %}"
+                                                                                  formmethod="post"
+                                                                                  formenctype="multipart/form-data"
+                                                                                  class="btn btn-success">
+                                                                              <span class='glyphicon glyphicon-plus'></span>
+                                                                          </button>
+                                                                      </div>
+                                                                  </div>
+                                                              </div>
+                                                              </div>
+                                                          </div>
+                                                        </div>
+                                                        </div>
                                                         </div>
                                                         <div class="col-md-12">
                                                             <div class="panel panel-info">
                                                                 <div class="panel-heading">
-                                                                    <h6 class="panel-title">Added Medicines</h6>
+                                                                    <h6 class="panel-title">Added Tests</h6>
                                                                 </div>
                                                                 <div class="panel-body" style="display: block;">
                                                                     <div class="form-group">
                                                                         <table class="table table-success">
                                                                             <thead>
                                                                                 <tr class="table-success">
-                                                                                    <th></th>
-                                                                                    <th>Medicine</th>
-                                                                                    <th>Times a day</th>
-                                                                                    <th>No of days</th>
-                                                                                    <th>When to take</th>
+                                                                                    <th>S No.</th>
+                                                                                    <th>Test</th>
+                                                                                    <th>Result</th>
+                                                                                    <th>Date & Time</th>
+<!--                                                                                    <th></th>-->
                                                                                     <th></th>
                                                                                 </tr>
                                                                             </thead>
                                                                             {% if pres %}
                                                                             <tbody>
-                                                                                {%for m in pres.presmedicine_set.all %}
+                                                                                {%for t in pres.testpres_set.all %}
                                                                                 <tr>
-                                                                                    <th>{{ forloop.counter }}.</th>
-                                                                                    <th>{{m.medicine}}</th>
-                                                                                    <td>{{m.times_a_day}}</td>
-                                                                                    <td>{{m.no_of_days}}</td>
-                                                                                    <td>{{m.when_to_take}}</td>
+                                                                                    <th>{{forloop.counter}}.</th>
+                                                                                    <th>{{t.test}}</th>
+                                                                                    <td>{{t.value}}</td>
+                                                                                    <td>{{t.date}}</td>
+<!--                                                                                    <td>-->
+<!--                                                                                        <button formnovalidate-->
+<!--                                                                                                value="Edit"-->
+<!--                                                                                                type="submit"-->
+<!--                                                                                                form="testpres_form"-->
+<!--                                                                                                formaction="{% url 'seven:change_testpres' pres.id  t.id %}"-->
+<!--                                                                                                formmethod="post"-->
+<!--                                                                                                formenctype="multipart/form-data"-->
+<!--                                                                                                class="btn btn-warning btn-xs">-->
+<!--                                                                                            <span class="glyphicon glyphicon-edit"></span>-->
+<!--                                                                                        </button>-->
+<!--                                                                                    </td>-->
                                                                                     <td>
                                                                                         <button
                                                                                         formnovalidate
                                                                                         value="Delete"
                                                                                         type="submit"
-                                                                                        form="pres_form"
-                                                                                        formaction="{%url 'Doctor:delete_med' patient.rollNo pres.id m.id %}"
+                                                                                        form="testpres_form"
+                                                                                        formaction="{%url 'seven:delete_test' pres.id t.id %}"
                                                                                         formmethod="post"
                                                                                         formenctype="multipart/form-data"
-                                                                                        class="btn btn-default btn-xs"
-                                                                                        align="center"
-                                                                                ><span class="glyphicon glyphicon-trash"></span></button>
+                                                                                        class="btn btn-danger btn-xs"
+                                                                                        align="center">
+                                                                                            <span class="glyphicon glyphicon-trash"></span>
+                                                                                        </button>
                                                                                     </td>
                                                                                 </tr>
                                                                             {% endfor %}
@@ -165,222 +279,14 @@
                                                             </div>
                                                         </div>
 
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-md-12">
-                                                            <div class="panel panel-info">
-                                                                <div class="panel-heading">
-                                                                    <h6 class="panel-title">Other details</h6>
-                                                                </div>
-                                                                <div class="panel-body" style="display: block;">
-                                                                    <div class="row">
-                                                                        <div class="form-group col-sm-4">
-                                                                            <div class="fieldWrapper">
-                                                                                {{ pres_form.tests.errors }}
-                                                                                <label for="{{ pres_form.tests.id_for_label }}" class="req">Tests</label><br>
-                                                                                {{ pres_form.tests }}
-                                                                            </div>
-                                                                        </div>
-                                                                        {%if pres%}
-                                                                        <div class="form-group col-sm-4">
-                                                                            <div class="fieldWrapper">
-                                                                                <table style="border-color: white; width:100%;" class="table table-responsive" align="center">
-                                                                                  <tr style="border-color: white;">
-                                                                                      <td style="border-color: white; align:left;"><b>Tests</b></td>
-                                                                                      {%if pres.testpres_set.all %}
-                                                                                      <td  style="border-color: white;">{%for t in pres.testpres_set.all %}{{ t.test }}<br>{%endfor%}</td>
-                                                                                      <td  style="border-color: white;">{%for t in pres.testpres_set.all %}{{ t.value }}<br>{%endfor%}</td>
-                                                                                      {%else%}
-                                                                                      <td>NA</td>
-                                                                                      {%endif%}
-                                                                                  </tr>
-                                                                                </table>
-                                                                            </div>
-                                                                        </div>
-                                                                        {%endif%}
-                                                                    </div>
-                                                                    <div class="row">
-                                                                        <div class="form-group col-sm-4">
-                                                                            <div class="fieldWrapper">
-                                                                                {{ pres_form.treatmentFor.errors }}
-                                                                                <label for="{{ pres_form.treatmentFor.id_for_label }}" class="req">Treatment for</label><br>
-                                                                                {{ pres_form.treatmentFor }}
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="form-group col-sm-4">
-                                                                            <div class="fieldWrapper">
-                                                                                {{ pres_form.roomNo7.errors }}
-                                                                                <label for="{{ pres_form.roomNo7.id_for_label }}" class="req">Room no 7</label><br>
-                                                                                {{ pres_form.roomNo7 }}
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="form-group col-sm-4">
-                                                                            <div class="fieldWrapper">
-                                                                                {{ pres_form.remarks.errors }}
-                                                                                <label for="{{ pres_form.remarks.id_for_label }}" class="req">Remarks</label><br>
-                                                                                {{ pres_form.remarks }}
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
                                                     </div><hr>
+                                                </form>
+                                        </div>
 
-                                                <div class="row">
-                                                    <div class="col-sm-4" align='center'>
-                                                        <div class="form_sep">
-                                                            <button
-                                                                    formnovalidate
-                                                                    value="Save"
-                                                                    type="submit"
-                                                                    form="pres_form"
-                                                                    formaction="{% if pres %} {% url 'Doctor:save_pres' patient.rollNo pres.id %} {%else%} {% url 'Doctor:save_pres_new' patient.rollNo %} {%endif%}"
-                                                                    formmethod="post"
-                                                                    formenctype="multipart/form-data"
-                                                                    class="btn btn-success"
-                                                                    align="right"
-                                                            >Save</button>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-4" align='center'>
-                                                        <div class="form_sep">
-                                                            <button
-                                                                    formnovalidate
-                                                                    value="Create Reference"
-                                                                    type="submit"
-                                                                    form="pres_form"
-                                                                    formaction="{% if pres %} {% url 'Doctor:save_and_end' patient.rollNo pres.id 1 %} {%else%} {% url 'Doctor:create_and_end' patient.rollNo 1 %} {%endif%}"
-                                                                    formmethod="post"
-                                                                    formenctype="multipart/form-data"
-                                                                    class="btn btn-success"
-                                                                    align="left"
-                                                                    formtarget="_blank"
-                                                            >Save And End</button>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-4" align='center'>
-                                                        <div class="form_sep">
-                                                            <button
-                                                                    formnovalidate
-                                                                    value="Create Reference"
-                                                                    type="submit"
-                                                                    form="pres_form"
-                                                                    formaction="{% if pres %} {% url 'Doctor:refer' patient.rollNo pres.id %} {%else%} {% url 'Doctor:refer_new' patient.rollNo %} {%endif%}"
-                                                                    formmethod="post"
-                                                                    formenctype="multipart/form-data"
-                                                                    class="btn btn-success"
-                                                                    align="left"
-                                                                    formtarget="_blank"
-                                                            >Refer</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                    </div>
                                 </div>
                             </div>
                         </div>
-                        </div>
 
-        <!--                        Patient History-->
-                        <div class="tab-pane fade" id="his"><br>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="panel panel-primary">
-                                        <div class="panel-heading">
-                                            <h6 class="panel-title">History</h6>
-                                        </div>
-                                        <div class="panel-body" style="display: block;">
-                                            <ul class="nav nav-pills">
-                                                <li class="active"><a data-toggle="pill" href="#pr">Precriptions</a></li>
-                                                <li><a data-toggle="pill" href="#file">Patient's files</a></li>
-                                            </ul>
-                                            {% if error_message%}
-                                            <div class="alert alert-warning">
-                                                <p><strong>{{ error_message }}</strong></p>
-                                            </div>
-                                            {% endif %}
-                                            <div class="tab-content">
-                                                <div id="pr" class="tab-pane fade in active">
-                                                    <div class="row">
-                                                        <table class="table table-responsive">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>S No</th>
-                                                                    <th>Consultations</th>
-                                                                    <th>Treatment For</th>
-                                                                    <th>Doctor</th>
-                                                                    <th>Edit</th>
-                                                                </tr>
-                                                            </thead>
-
-                                                            {%for p in patient.prescription_set.all %}
-                                                            <tbody>
-                                                                <tr class="table-success">
-                                                                    <td>{{ forloop.counter }}.</td>
-                                                                    <td>
-                                                                        <ul>
-                                                                            {%for d in p.presdetails_set.all%}
-                                                                                <li>{{ d.date }} - By: Dr {{d.doctor.user.first_name}} {{d.doctor.user.last_name}}</li>
-                                                                            {%endfor%}
-                                                                        </ul>
-                                                                    </td>
-                                                                    <td>{{p.treatmentFor}}</td>
-                                                                    <td>Dr {{ p.doctor.user.first_name }} {{ p.doctor.user.last_name }}</td>
-                                                                    <td>
-                                                                        <button
-                                                                        formnovalidate
-                                                                        value="Edit"
-                                                                        type="submit"
-                                                                        form="pres_form"
-                                                                        formaction="{%url 'Doctor:edit_prescription' p.id %}"
-                                                                        formmethod="post"
-                                                                        formenctype="multipart/form-data"
-                                                                        class="btn btn-default btn-xs"
-                                                                        align="center"
-                                                                        ><span class="glyphicon glyphicon-pencil"></span></button>
-                                                                    </td>
-                                                                </tr>
-                                                            {% endfor %}
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-
-                                                <div id="file" class="tab-pane fade">
-                                                    {{patient.PatHistory_set.all}}
-                                                    <div class="row">
-                                                        <table class="table table-responsive">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>S No</th>
-                                                                    <th>Treatment For</th>
-                                                                    <th>Remarks</th>
-                                                                    <th>File</th>
-                                                                </tr>
-                                                            </thead>
-
-                                                            {%for p in patient.PatHistory_set.all %}
-                                                            <tbody>
-                                                                <tr class="table-success">
-                                                                    <td>{{ forloop.counter }}.</td>
-                                                                    <td>{{p.treatmentFor}}</td>
-                                                                    <td>{{p.remarks}}</td>
-                                                                    <td><a href="{%url 'Patient:pres_details' p.id%}" target="_blank">{{ p.date.date }}</a></td>
-                                                                </tr>
-                                                            {% endfor %}
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
         <!--                        Patient Profile-->
                         <div class="tab-pane fade" id="prof">
@@ -389,7 +295,7 @@
                                     <div class="col-md-12">
                                         <div class="panel panel-primary">
                                             <div class="panel-heading">
-                                                <h6 class="panel-title">{{patient.user.first_name}}'s profile</h6>
+                                                <h6 class="panel-title">{{pres.patient.user.first_name}}'s profile</h6>
                                             </div>
                                             <div class="panel-body" style="display: block;">
                                                 <div class="col-md-6">
@@ -583,3 +489,4 @@
         </div>
     </div>
 {% endblock %}
+

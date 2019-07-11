@@ -7,7 +7,6 @@ import datetime
 
 # Create your views here.
 
-
 def delete_test(request, pres_id, testpres_id):
     pres = get_object_or_404(Prescription, pk=pres_id)
     testpres = get_object_or_404(TestPres, pk=testpres_id)
@@ -37,12 +36,7 @@ def add_test(request, pres_id, testpres_id=None):
         testpres_form = form_class_testpres(request.POST or None)
     else:
         testpres = get_object_or_404(TestPres, pk=testpres_id)
-        testpres_form = form_class_testpres(None, instance=testpres)
-
-        delete_test(request,pres_id,testpres_id)
-
-        return render(request, template_name,
-                      {'testpres_form': testpres_form, 'pres': pres })
+        testpres_form = form_class_testpres(request.POST or None, instance=testpres)
 
     if testpres_form.is_valid():
         if testpres_id is None:
@@ -50,13 +44,12 @@ def add_test(request, pres_id, testpres_id=None):
             t = testpres_form.save(commit=False)
             t.date = current_time
             t.prescription = pres
-
             t.save()
 
             testpres_form = form_class_testpres(None)
 
             return render(request, template_name,
-                        {'testpres_form': testpres_form, 'pres': pres, 'error_message': 'Form Saved'})
+                        {'testpres_form': testpres_form, 'pres': pres, 'error_message': 'Form Saved', 'patient': patient})
 
     return render(request, template_name,
-                  {'testpres_form': testpres_form, 'pres': pres})
+                  {'testpres_form': testpres_form, 'pres': pres, 'patient' : patient})

@@ -11,7 +11,9 @@ from django.urls import reverse
 from Patient.forms import AppointmentRequestForm
 from Doctor.models import *
 from Reception.models import *
-
+from Reception.forms import AppointmentForm
+from datetime import datetime, timedelta
+from django.contrib.auth.decorators import login_required
 
 class Home(TemplateView):
     template_name = "users/base_home.html"
@@ -141,18 +143,26 @@ def logout_user(request):
     logout(request)
     return render(request, 'users/base_home.html', {'error_message': 'logged out!'})
 
-def redirect_home(request, user):
-    # if user.type.types == 'phr':
-    #     return render(request, 'users/phr_index.html', {})
-    if user.type.types == 'rec':
+@login_required(login_url="/")
+def redirect_home(request):
+    if request.user.type.types == 'phr':
+        return render(request, 'Pharmacy/home_pharmacy.html', {
+            'appointment_set': Appointment.objects.filter(dateNtime__range = ((datetime.now() - timedelta(hours=5)), datetime.now()), status = 't')
+        })
+    if request.user.type.types == 'rec':
         return render(request, 'Reception/home_reception.html', {
             'appointment_set' : Appointment.objects.all(),
             'refer_list' : References.objects.all(),
+            'form' : AppointmentForm(None),
         })
-    if user.type.types == 'doc':
+    if request.user.type.types == 'doc':
         return render(request, 'Doctor/home_doc.html', {})
-    if user.type.types == 'pat':
+    if request.user.type.types == 'pat':
         return render(request, 'Patient/home_patient.html', {'req_form': AppointmentRequestForm(None)})
+    if request.user.type.types == 'vit':
+        return render(request, 'seven/home_vitals.html', {
+            'appointment_set': Appointment.objects.filter(dateNtime__range = ((datetime.now() - timedelta(hours=5)), datetime.now()), status = 'e')
+        })
 
     return render(request, 'users/base_home.html', {'error_message': 'Logged in!'})
 
@@ -160,17 +170,24 @@ def redirect_home(request, user):
 def login_user(request):
     baseHome = 'users/base_home.html'
     if request.user.is_authenticated:
-        # if user.type.types == 'phr':
-    #     return render(request, 'users/phr_index.html', {})
+        if request.user.type.types == 'phr':
+                return render(request, 'Pharmacy/home_pharmacy.html', {
+                    'appointment_set': Appointment.objects.filter(dateNtime__range = ((datetime.now() - timedelta(hours=5)), datetime.now()), status = 't')
+                })
         if request.user.type.types == 'rec':
             return render(request, 'Reception/home_reception.html', {
                 'appointment_set' : Appointment.objects.all(),
                 'refer_list' : References.objects.all(),
+                'form' : AppointmentForm(None),
             })
         if request.user.type.types == 'doc':
             return render(request, 'Doctor/home_doc.html', {})
         if request.user.type.types == 'pat':
             return render(request, 'Patient/home_patient.html', {'req_form': AppointmentRequestForm(None)})
+        if request.user.type.types == 'vit':
+            return render(request, 'seven/home_vitals.html', {
+                'appointment_set': Appointment.objects.filter(dateNtime__range = ((datetime.now() - timedelta(hours=5)), datetime.now()), status = 'e')
+            })
 
         return render(request, 'users/base_home.html', {'error_message': 'Logged in!'})
     if request.method == "POST":
@@ -182,9 +199,10 @@ def login_user(request):
                 login(request, user)
                 
                 if user.type:
-                    # if user.type.types == 'phr':
-                          #return render(request, 'users/phr_index.html', {})
-
+                    if user.type.types == 'phr':
+                        return render(request, 'Pharmacy/home_pharmacy.html', {
+                            'appointment_set': Appointment.objects.filter(dateNtime__range = ((datetime.now() - timedelta(hours=5)), datetime.now()), status = 't')
+                        })
                     if user.type.types == 'pat':
                         return render(request, 'Patient/home_patient.html', {
                             'req_form': AppointmentRequestForm(None)
@@ -195,7 +213,13 @@ def login_user(request):
                         return render(request, 'Reception/home_reception.html', {
                             'appointment_set' : Appointment.objects.all(),
                             'refer_list' : References.objects.all(),
+                            'form' : AppointmentForm(None),
                         })
+                    if user.type.types == 'vit':
+                        return render(request, 'seven/home_vitals.html', {
+                            'appointment_set': Appointment.objects.filter(dateNtime__range = ((datetime.now() - timedelta(hours=5)), datetime.now()), status = 'e')
+                        })
+
                 else:
                     return render(request, baseHome, {'error_message': 'User has no type'})
             else:

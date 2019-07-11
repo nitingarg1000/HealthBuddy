@@ -32,7 +32,7 @@
 
             <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <a href = "{% url 'users:home' %}">
+                    <a href = "{% url 'users:redirect_home' %}">
                         <span class="" aria-hidden="true"></span>&nbsp;<i class="fa fa-user fa-1.5x"></i> {{request.user.first_name}}
                     </a>
                 </li>
@@ -83,8 +83,13 @@
             {% for appointment in request.user.doctor.appointment_set.all %}
               {% if appointment.status == 'w' %}
             <tr>
-              <td>{{appointment.patient.user.first_name}} {{appointment.patient.user.last_name}}</td>
+              <td><a href="{%url 'Doctor:create_prescription' appointment.patient.rollNo %}">{{appointment.patient.user.first_name}} {{appointment.patient.user.last_name}}</a></td>
               <td>{{appointment.patient.rollNo}}</td>
+              {%if appointment.reqApproval%}
+                <td><span class="label label-success">Approved</span></td>
+                {%else%}
+                <td><span class="label label-danger">Pending</span></td>
+              {%endif%}
               <td>{{appointment.dateNtime}}</td>
             </tr>
               {%endif%}
@@ -105,9 +110,9 @@
           {% if request.user.doctor.to_doc.all %}
             {% for r in request.user.doctor.to_doc.all %}
             <tr>
-                <td><a href="{%url 'Doctor:ref_pres' r.id %}">{{r.prescription.patient.user.first_name}} {{r.prescription.patient.user.last_name}}</a></td>
-              <td>Dr. {{r.from_doc.user.first_name}} {{r.from_doc.user.first_name}}</td>
-              <!-- <td>{{appointment.dateNtime}}</td> -->
+              <td><a href="{%url 'Doctor:ref_pres' r.id %}">{{r.prescription.patient.user.first_name}} {{r.prescription.patient.user.last_name}}</a></td>
+              <td>Dr. {{r.from_doc.user.first_name}} {{r.from_doc.user.last_name}}</td>
+              <td>{{r.remarks_from_doc}}</td>
             </tr>
 
             {%endfor%}
@@ -128,11 +133,16 @@
           <tbody>
             {% for appointment in request.user.doctor.appointment_set.all %}
               {% if appointment.status == 'e' %}
-            <tr>
-              <td>{{appointment.patient.user.first_name}} {{appointment.patient.user.last_name}}</td>
-              <td>{{appointment.patient.rollNo}}</td>
-              <td>{{appointment.dateNtime}}</td>
-            </tr>
+              <tr>
+                <td><a href="{%url 'Doctor:create_prescription' appointment.patient.rollNo %}">{{appointment.patient.user.first_name}} {{appointment.patient.user.last_name}}</a></td>
+                <td>{{appointment.patient.rollNo}}</td>
+                {%if appointment.reqApproval%}
+                  <td><span class="label label-success">Approved</span></td>
+                  {%else%}
+                  <td><span class="label label-danger">Pending</span></td>
+                {%endif%}
+                <td>{{appointment.dateNtime}}</td>
+              </tr>
               {%endif%}
             {%endfor%}
           </tbody>

@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import Permission, User 
+from django.contrib.auth.models import Permission, User
 
 class Type(models.Model):
     options = [
@@ -7,6 +7,7 @@ class Type(models.Model):
         ('rec', 'Reception'),
         ('doc', 'Doctor'),
         ('pat', 'Patient'),
+        ('vit', 'vitals')
     ]
     types = models.CharField(
         max_length = 3,
@@ -17,5 +18,3 @@ class Type(models.Model):
 
     def __str__(self):
         return self.user.username
-
-

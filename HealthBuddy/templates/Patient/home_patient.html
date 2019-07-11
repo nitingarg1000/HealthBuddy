@@ -37,7 +37,7 @@
 
             <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <a href = "{% url 'users:home' %}">
+                    <a href = "{% url 'users:redirect_home' %}">
                         <span class="" aria-hidden="true"></span>&nbsp;<i class="fa fa-user fa-1.5x"></i> {{request.user.first_name}}
                     </a>
                 </li>
@@ -203,10 +203,10 @@
       </div>
       <div class="modal-footer">
         <center>
-            <button 
-            type="submit" 
-            value="submit" 
-            form="app_form" 
+            <button
+            type="submit"
+            value="submit"
+            form="app_form"
             class="btn btn-default btn">
             </button>
         </center>

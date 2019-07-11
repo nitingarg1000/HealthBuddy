@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .forms import AppointmentForm
 from .models import Appointment
 from Patient.models import Patient
@@ -14,7 +14,7 @@ class ReceptionHome(TemplateView):
 
 @login_required(login_url = "/")
 def create_appointment(request, app_id=None):
-    template_name = "Reception/app_form.html"
+    template_name = ""
     receptionist = request.user.reception
     form_class = AppointmentForm
     if app_id is None:
@@ -28,19 +28,19 @@ def create_appointment(request, app_id=None):
             a = form.save(commit=False)
             a.reqApproval = True
             a.patient = Patient.objects.get(pk=a.patient_roll)
-            a.receptionist = receptionist
+            # a.receptionist = receptionist
             a.dateNtime = datetime.datetime.now()
             a.save()
 
-            return render(request, template_name, {'form': form, 'error_message': 'Appointment confirmed'})
+            return redirect('/login_user/')
 
         else:
             a = form.save(commit=False)
             a.reqApproval = True
-            a.receptionist = receptionist
+            # a.receptionist = receptionist
             a.dateNtime = datetime.datetime.now()
             a.save()
 
-            return render(request, template_name, {'form': form, 'error_message': 'Appointment confirmed'})
+            return redirect('/login_user/')
 
-    return render(request, template_name, {'form': form})
+    return redirect('/login_user/')

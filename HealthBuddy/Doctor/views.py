@@ -74,8 +74,7 @@ def save_pres(request, patient_roll, pres_id=None, end=None):
     template_name = 'Doctor/prescription_form.html'
     patient = get_object_or_404(Patient, pk=patient_roll)
     applist = Appointment.objects.filter(patient=patient, doctor=request.user.doctor)
-    num = applist.count()
-    app = applist.get(pk=num)
+    app = applist.reverse()[0]
 
     if pres_id == None:
         pres_form = form_class_pres(request.POST or None)
@@ -101,7 +100,8 @@ def save_pres(request, patient_roll, pres_id=None, end=None):
             app.status = 'e'
             app.save()
             if end:
-                app.delete()
+                app.status = 't'
+                app.save()
             return render(request, template_name,
                           {'pres_form': pres_form, 'med_form': med_form, 'patient': patient, 'error_message': 'form saved'})
         else:
@@ -116,7 +116,9 @@ def save_pres(request, patient_roll, pres_id=None, end=None):
             app.status = 'e'
             app.save()
             if end:
-                app.delete()
+                # app.delete()
+                app.status = 't'
+                app.save()
             return render(request, template_name, {'pres_form': pres_form, 'med_form': med_form, 'patient': patient, 'error_message': 'form saved'})
 
 

@@ -4,7 +4,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="//www.chartjs.org/assets/Chart.min.js"></script>
 <link href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-{% comment %} <script  src="{% static 'Doctor/home_jquery.js' %}"></script> {% endcomment %}
 <link rel="stylesheet" type="text/css" href="/static/Reception/home.css" />
 
 {% endblock %}
@@ -32,7 +31,7 @@
 
             <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <a href = "{% url 'users:home' %}">
+                    <a href = "{% url 'users:redirect_home' %}">
                         <span class="" aria-hidden="true"></span>&nbsp;<i class="fa fa-user fa-1.5x"></i> {{request.user.first_name}}
                     </a>
                 </li>
@@ -57,7 +56,7 @@
               <div class="title">
                   <a target="_blank" href="https://scripteden.com/" class="">{{request.user.first_name}} {{request.user.last_name}}</a>
               </div>
-              <div class="desc">Reception</div>
+              <div class="desc">staff</div>
           </div>
           <div class="bottom">
             <div class="sidebar-items">
@@ -75,52 +74,33 @@
   <div class="col-lg-8 col-md-8">
     <div class="panel" id="waiting-list">
       <div class="panel-heading">
-        <h4 class="text-uppercase"><strong>Appointments</strong></h4>
+        <h4 class="text-uppercase"><strong>List Of Patients</strong></h4>
       </div>
       <div class="panelbody">
         <table class="table table-default">
           <tbody>
             {% for appointment in appointment_set %}
             <tr>
-              <td><a href=''>{{appointment.patient.user.first_name}} {{appointment.patient.user.last_name}}</a></td>
+              {%with appointment.patient.prescription_set.reverse|first as pres%}
+              <td><a href="{% url 'seven:create_testpres' pres.id %}">{{appointment.patient.user.first_name}} {{appointment.patient.user.last_name}}</a></td>
+              {%endwith%}
               {%if appointment.reqApproval%}
               <td><span class="label label-success">Approved</span></td>
               <td>{% if appointment.status == 'w' %}<span class="label label-warning">Waiting</span>
-                {%else%}<span class="label label-info">Examining</span>{%endif%}</td>
+                {%elif appointment.status == 'e' %}<span class="label label-info">Examining</span>{%endif%}</td>
               <td>{{appointment.patient.rollNo}}</td>
               {%else%}
               <td><span class="label label-danger">Pending</span></td>
               <td>{% if appointment.status == 'w' %}<span class="label label-warning">Waiting</span>
                 {%else%}<span class="label label-info">Examining</span>{%endif%}</td>
               <td>{{appointment.patient.rollNo}}</td>
-              <td><a class="btn" href="" data-toggle="">Approve</a></td>
               {%endif%}
+              <td>{{appointment.dateNtime}}</td>
             </tr>
             {%endfor%}
           </tbody>
         </table>
 
-      </div>
-    </div>
-
-    <div class="panel" id="waiting-list">
-      <div class="panel-heading">
-        <h4 class="text-uppercase"><strong>Referred List</strong></h4>
-      </div>
-      <div class="panelbody">
-        <table class="table table-default">
-          <tbody>
-          {% if refer_list %}
-            {% for r in refer_list %}
-            <tr>
-              <td><a href="{%url 'Doctor:ref_pres' r.id %}">{{r.prescription.patient.user.first_name}} {{r.prescription.patient.user.last_name}}</a></td>
-              <td>Dr. {{r.from_doc.user.first_name}} {{r.from_doc.user.first_name}}</td>
-              <td>Dr. {{r.to_doc.user.first_name}} {{r.to_doc.user.first_name}}</td>
-            </tr>
-            {%endfor%}
-          {%endif%}
-          </tbody>
-        </table>
       </div>
     </div>
 

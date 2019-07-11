@@ -1,7 +1,53 @@
 {%extends 'users/base.html'%}
+{% block scripts %}
+{% load staticfiles %}
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="//www.chartjs.org/assets/Chart.min.js"></script>
+<link href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<!-- <script  src="{% static 'Doctor/home_jquery.js' %}"></script> -->
+<link rel="stylesheet" type="text/css" href="/static/Patient/home.css" />
+<script>
 
+</script>
+{% endblock %}
 {%block body%}
 
+<nav class="navbar navbar-inverse navbar-static-top">
+    <div class="container-fluid">
+
+        <!-- Header -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#topNavBar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{% url 'users:home' %}"><strong style = "font-size:18px">HealthBuddy</strong></a>
+        </div>
+
+        <!-- Items -->
+        <div class="collapse navbar-collapse" id="topNavBar">
+            <ul class="nav navbar-nav">
+                <li class="#"><a href="http://www.iitk.ac.in/hc/HealthCalci/healthcalci.htm" target="_blank"><span class="#" aria-hidden="true"></span>&nbsp; Health Calculator</a></li>
+                <li class="#"><a href="{% url 'users:contact'%}"><span class="#" aria-hidden="true"></span>&nbsp; Contact Us</a></li>
+
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href = "{% url 'users:redirect_home' %}"
+                        <span class="" aria-hidden="true"></span>&nbsp; {{request.user.first_name}}
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'users:logout' %}">
+                        <span class="glyphicon glyphicon-off" aria-hidden="true"></span>&nbsp; Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
 <div class="media"><br>
     <div class="row">
         <div class="col-md-12">
