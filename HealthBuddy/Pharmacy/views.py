@@ -1,10 +1,13 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404
 from Doctor.models import PresMedicine, Prescription
 from Patient.models import Patient
 from .models import *
-from .forms import *
+from .forms import PharQuantity, PresSearch
+from django.contrib.auth import authenticate
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
+@login_required(login_url="/")
 def searchPres(request):
     form_class = PresSearch
     form = form_class(request.POST or None)
@@ -24,6 +27,61 @@ def searchPres(request):
     return render(request, 'Pharmacy/phar_base.html', {'form': form})
 
 
+@login_required(login_url="/")
+def verify_user(request, pres_id):
+    pres = get_object_or_404(Prescription, pk=pres_id)
+    med = PresMedicine.objects.filter(prescription=pres)
+    med_list_all = Medicine.objects.all()
+    username = request.POST['username']
+    password = request.POST['password']
+    provided = request.POST.getlist('provided')
+
+    patient = pres.patient
+    form_class = PharQuantity
+    form = form_class(None)
+    temp_list = []
+    for m in med_list_all:
+        for pm in med:
+            if pm.medicine == m.name:
+                temp_list.append(m)
+
+    user = authenticate(username=username, password=password)
+    if user is not None:
+        med_list = []
+        for med in provided:
+            m = get_object_or_404(PresMedicine, pk=med)
+            med_list.append(m)
+
+        for med in med_list:
+            med.provided = True
+            med.save()
+
+        context = {
+            'patient': patient,
+            'pres': pres,
+            'med_list': med_list_all,
+            'med': med,
+            'form': form,
+            'temp_list': temp_list,
+            'error_message': 'Medicine provided',
+        }
+
+        return render(request, 'Pharmacy/test.html', {'med_list': med_list})
+    else:
+        context = {
+            'patient': patient,
+            'pres': pres,
+            'med_list': med_list_all,
+            'med': med,
+            'form': form,
+            'temp_list': temp_list,
+            'error_message': 'Invalid login',
+        }
+
+        return render(request, 'Pharmacy/pres_view.html', context)
+
+
+@login_required(login_url="/")
 def presView(request, patient_roll, pres_id=None):
     form_class = PharQuantity
     patient = get_object_or_404(Patient, rollNo=patient_roll)
@@ -48,6 +106,7 @@ def presView(request, patient_roll, pres_id=None):
     return render(request, 'Pharmacy/pres_view.html', context)
 
 
+@login_required(login_url="/")
 def change_quantity(request, med_id, patient_roll, pres_id):
     form_class = PharQuantity
     template_name = 'Pharmacy/pres_view.html'
@@ -73,7 +132,8 @@ def change_quantity(request, med_id, patient_roll, pres_id):
                 for pm in med:
                     if pm.medicine == m.name:
                         temp_list.append(m)
-            a = {'error_message': 'Quantity changed', 'patient': patient, 'pres': pres, 'med_list': med_list, 'med': med, 'temp_list':temp_list, 'form': form}
+            a = {'error_message': 'Quantity changed', 'patient': patient, 'pres': pres, 'med_list': med_list,
+                 'med': med, 'temp_list': temp_list, 'form': form}
             return render(request, template_name, a)
         else:
             for m in med_list:
@@ -110,10 +170,11 @@ def change_quantity(request, med_id, patient_roll, pres_id):
 
     return render(request, template_name, context)
 
+@login_required(login_url="/")
 def database(request, med_id, is_deleted):
     form_class = PharQuantity
     template_name = 'Pharmacy/med_list.html'
-    
+
     med_list = Medicine.objects.all()
     form = form_class(request.POST or None)
 
@@ -142,9 +203,10 @@ def database(request, med_id, is_deleted):
         change_med_get.save()
         change_med_get.refresh_from_db()
         form = form_class(None)
-        a = {'error_message': 'Quantity changed', 'med_list': med_list, 'form': form, 'med_form': PharMedicineForm(None)}
+        a = {'error_message': 'Quantity changed', 'med_list': med_list, 'form': form,
+             'med_form': PharMedicineForm(None)}
         return render(request, 'Pharmacy/med_list.html', a)
-        
+
     context = {
         'med_list': med_list,
         'form': form,
@@ -154,10 +216,13 @@ def database(request, med_id, is_deleted):
 
     return render(request, template_name, context)
 
+@login_required(login_url="/")
 def med_list_view(request):
     med_list = Medicine.objects.all()
-    return render(request, 'Pharmacy/med_list.html',{'med_list':med_list, 'form': PharQuantity(None), 'med_form': PharMedicineForm(None)})
+    return render(request, 'Pharmacy/med_list.html',
+                  {'med_list': med_list, 'form': PharQuantity(None), 'med_form': PharMedicineForm(None)})
 
+@login_required(login_url="/")
 def add_new_med(request):
     form_class = PharMedicineForm
     form = form_class(request.POST or None)
@@ -165,5 +230,11 @@ def add_new_med(request):
     if form.is_valid():
         f = form.save()
 
-        return render(request, 'Pharmacy/med_list.html',{'med_list':med_list, 'form': PharQuantity(None), 'med_form' : form })
-    return render(request, 'Pharmacy/med_list.html',{'med_list':med_list, 'form': PharQuantity(None),'med_form' : form, 'error':'Couldn\'t add medicine' })
+        return render(request, 'Pharmacy/med_list.html',
+                      {'med_list': med_list, 'form': PharQuantity(None), 'med_form': form})
+    return render(request, 'Pharmacy/med_list.html',
+                  {'med_list': med_list, 'form': PharQuantity(None), 'med_form': form,
+                   'error': 'Couldn\'t add medicine'})
+
+
+

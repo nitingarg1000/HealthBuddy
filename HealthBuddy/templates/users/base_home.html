@@ -1,5 +1,5 @@
 {%extends 'users/base.html'%}
-{% block scripts%}
+{%block scripts%}
 {% load staticfiles %}
 <style>
     body{
@@ -15,9 +15,8 @@
         color: #white;
     }
 </style>
-{% endblock%}
-{% block body%}
-
+{%endblock%}
+{%block body%}
 <nav class="navbar navbar-inverse navbar-static-top">
     <div class="container-fluid">
 
@@ -46,7 +45,7 @@
                       <span class="" aria-hidden="true"></span>&nbsp; {{request.user.first_name}}
                   </a>
               </li>
-              {% if request.user.is_authenticated %}
+                {% if request.user.is_authenticated %}
               <li>
                   <a href="{% url 'users:logout' %}">
                       <span class="glyphicon glyphicon-off" aria-hidden="true"></span>&nbsp; Logout
@@ -65,6 +64,7 @@
 
     </div>
 </nav>
+
 
 <div class="container" >
     <img align = 'right' src = "{% static 'users/HC-2.svg' %}">
@@ -131,7 +131,7 @@
                             <h3>
                                 {%if error_message%} {{error_message}} {%endif%}
                             </h3>
-                            <div style="float:right; font-size: 80%; position: relative; top:-10px"><a href="#" data-target="#pwdModal" data-toggle="modal">Forgot password?</a></div>
+                            <div style="float:right; font-size: 80%; position: relative; top:-10px"><a href="{%url 'password_reset'%}">Forgot password?</a></div>
                         </div>
 
                         <div style="padding-top:30px" class="panel-body" >
@@ -162,12 +162,9 @@
                     </div>
                 </div>
         </div>
-        <div id="menu1" class="tab-pane fade"><br>
-            <div class = 'container'>
-            <center>
-                <img src = "{% static 'users/Welcome.png' %}" width = "60%" height = "50%"/>
-            </center>
-            </div>
+        <div id="menu1" class="tab-pane fade">
+            <h3>Menu 1</h3>
+            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
         </div>
         <div id="doctors" class="tab-pane fade">
             <section class="team">
@@ -283,140 +280,8 @@
             </section>
         </div>
         <div id="menu3" class="tab-pane fade">
-            <h3>Facilities</h3>
-            <div class = "container">
-                    <div class = "panel">
-                        <div class = "panel-heading">
-                            <h4 class="text-uppercase"><strong>ECG</strong></h4>
-                        </div>
-                        <div class = "panel-body">
-                        <center>
-                            <img src = "{% static 'users/egc.jpg'%}"width = "30%"/>
-
-                        </center><br>
-                        <strong>Routine ECG</strong><br>
-                            Timing<br>
-                            8: 00 AM to 2:00 PM (Monday to Saturday)<br>
-                        </div>
-                    </div>
-                    <div class = "panel">
-                        <div class = "panel-heading">
-                            <h4 class="text-uppercase"><strong>Pathology</strong></h4>
-                        </div>
-                        <div class = "panel-body">
-                        <center>
-                            <img src = "{% static 'users/Pathology.jpg'%}"width = "30%"/>
-
-                        </center><br>
-                        <strong>Path-Way Diagnosis Lab</strong><br>
-                            Timing<br>
-                            7: 30 AM to 12: 00 Noon<br>
-                            5: 00 PM to 7: 00 PM<br>
-                        </div>
-                    </div>
-                    <div class = "panel">
-                        <div class = "panel-heading">
-                            <h4 class="text-uppercase"><strong>Physiotherapy</strong></h4>
-                        </div>
-                        <div class = "panel-body">
-                        <center>
-                            <img src = "{% static 'users/physiotherapy.jpg'%}"width = "30%"/>
-
-                        </center><br>
-                        <strong>Dr. Sanjay Bhagat (M. P. T.)</strong><br>
-                            Timing<br>
-                            3: 00 AM to 9: 00 PM ( Monday to Saturday )<br>
-                        </div>
-                    </div>
-                    <div class = "panel">
-                        <div class = "panel-heading">
-                            <h4 class="text-uppercase"><strong>X-Ray</strong></h4>
-                        </div>
-                        <div class = "panel-body">
-                        <center>
-                            <img src = "{% static 'users/x-ray.jpg'%}"width = "30%"/>
-
-                        </center><br>
-                            <strong>Timing</strong><br>
-                            8: 00 AM to 12: 00 PM<br>
-                        </div>
-                    </div>
-                    <div class = "panel">
-                        <div class = "panel-heading">
-                            <h4 class="text-uppercase"><strong>Dressing</strong></h4>
-                        </div>
-                        <div class = "panel-body">
-                        <center>
-                            <img src = "{% static 'users/dressing.jpg'%}"width = "30%"/>
-
-                        </center><br>
-                        <strong>Monday to Friday</strong><br>
-                            8: 30 AM to 12: 00 Noon<br>
-                            4: 00 PM to 6: 00 PM (Evening)<br>
-                        <strong>Saturday</strong><br>
-                            8: 30 AM to 12: 00 Noon<br>
-                        <strong>Sunday - Holiday</strong><br>
-                            9: 00 AM to 10: 00 AM (Morning)<br>
-                        </div>
-                    </div>
-                    <div class = "panel">
-                        <div class = "panel-heading">
-                            <h4 class="text-uppercase"><strong>Labour Room</strong></h4>
-                        </div>
-                        <div class = "panel-body">
-                        <center>
-                            <img src = "{% static 'users/labour-room.jpg'%}"width = "30%"/>
-
-                        </center><br>
-                        </div>
-                    </div>
-                    <div class = "panel">
-                        <div class = "panel-heading">
-                            <h4 class="text-uppercase"><strong>Specialty Clinics</strong></h4>
-                        </div>
-                        <div class = "panel-body">
-                        <center>
-                            <img src = "{% static 'users/specialty-clinics.jpg'%}" width = "30%"/>
-
-                        </center><br>
-                        </div>
-                    </div>
-            </div>
-        </div>
-    </div>
-    <div id="pwdModal" class="modal fade" tabindex="-1" role="dialog-center" aria-hidden="true">
-        <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h1 class="text-center">Forgot Password?</h1>
-            </div>
-            <div class="modal-body">
-                <div class="col-md-12">
-                        <div class="panel panel-default">
-                            <div class="panel-body">
-                                <div class="text-center">
-
-                                <p>If you have forgotten your password you can reset it here.</p>
-                                    <div class="panel-body">
-                                        <fieldset>
-                                            <div class="form-group">
-                                                <input class="form-control input-lg" placeholder="E-mail Address" name="email" type="email">
-                                            </div>
-                                            <input class="btn btn-lg btn-primary btn-block" value="Send My Password" type="submit">
-                                        </fieldset>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-            </div>
-            <div class="modal-footer">
-                <div class="col-md-12">
-                <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-                </div>
-            </div>
-        </div>
+            <h3>Menu 3</h3>
+            <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
         </div>
     </div>
 </div>

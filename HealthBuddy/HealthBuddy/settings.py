@@ -138,3 +138,10 @@ STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+DEFAULT_FROM_EMAIL = 'healthbuddy7777@gmail.com'
+EMAIL_HOST='smtp.gmail.com'
+EMAIL_USE_TLS=1
+EMAIL_PORT=587
+EMAIL_HOST_USER='healthbuddy7777@gmail.com'
+EMAIL_HOST_PASSWORD='hum chutiye hai'

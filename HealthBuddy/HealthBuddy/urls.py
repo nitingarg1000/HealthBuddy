@@ -23,5 +23,6 @@ urlpatterns = [
     path('patient/', include('Patient.urls')),
     path('reception/', include('Reception.urls')),
     path('pharmacy/', include('Pharmacy.urls')),
-    path('seven/', include('seven.urls'))
+    path('seven/', include('seven.urls')),
+    path('', include('django.contrib.auth.urls')),
 ]

@@ -191,5 +191,6 @@ def login_user(request):
             return render(request, baseHome, {'error_message': 'Invalid login'})
     return render(request, baseHome)
 
+
 class HC_Info(TemplateView):
     template_name = "users/info.html"
