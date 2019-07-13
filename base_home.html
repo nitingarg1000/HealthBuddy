@@ -1,0 +1,926 @@
+{%extends 'users/base.html'%}
+{%block scripts%}
+{% load staticfiles %}
+<style>
+    body{
+        {% comment %} background-image: linear-gradient(to bottom, #222222 5%, #555555, #ffffff 40%) {% endcomment %}
+        background-color: #eeeeee;
+    }  
+
+    nav{
+        background-image: linear-gradient(to bottom, #222222, #666666);
+        box-shadow:  2px 0px 4px #000;
+    }
+    nav a {
+        color: #white;
+    }
+</style>
+{%endblock%}
+{%block body%}
+
+<nav class="navbar navbar-inverse navbar-static-top">
+    <div class="container-fluid">
+
+        <!-- Header -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#topNavBar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{% url 'users:home' %}"><strong>HealthBuddy</strong></a>
+        </div>
+
+        <!-- Items -->
+        <div class="collapse navbar-collapse" id="topNavBar">
+            <ul class="nav navbar-nav">
+                <li class="#"><a href="http://www.iitk.ac.in/hc/HealthCalci/healthcalci.htm" target="_blank"><span class="#" aria-hidden="true"></span>&nbsp; Health Calculator</a></li>
+                <li class="#"><a href="{% url 'users:contact'%}" target = "_blank"><span class="#" aria-hidden="true"></span>&nbsp; Contact Us</a></li>
+                <li class="#"><a href="{% url 'users:HC_Info'%}" target = "_blank"><span class="#" aria-hidden="true"></span>&nbsp; Info</a></li>
+
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+              <li>
+                  <a href = "{% url 'users:redirect_home' %}"
+                      <span class="" aria-hidden="true"></span>&nbsp; {{request.user.first_name}}
+                  </a>
+              </li>
+                 {% if request.user.is_authenticated %}
+              <li>
+                  <a href="{% url 'users:logout' %}">
+                      <span class="glyphicon glyphicon-off" aria-hidden="true"></span>&nbsp; Logout
+                  </a>
+              </li>
+              {%else%}
+              <li>
+                  <a href="#login">
+                      <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp; Login
+                  </a>
+              </li>
+              {%endif%}
+            </ul>
+        </div>
+
+
+    </div>
+</nav>
+
+<div class="container" >
+    <img align = 'right' src = "{% static 'users/HC-2.svg' %}">
+    <div id="myCarousel" class="carousel slide" data-ride="carousel">
+    <!-- Indicators -->
+        <ol class="carousel-indicators">
+            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+            <li data-target="#myCarousel" data-slide-to="1"></li>
+            <li data-target="#myCarousel" data-slide-to="2"></li>
+            <li data-target="#myCarousel" data-slide-to="3"></li>
+            <li data-target="#myCarousel" data-slide-to="4"></li>
+        </ol>
+
+    <!-- Wrapper for slides -->
+    <div class="carousel-inner">
+
+      <div class="item active">
+        <img src="{% static 'users/slider-1.jpg' %}" alt="" style="width:100%;">
+      </div>
+
+      <div class="item">
+        <img src="{% static 'users/slider-2.jpg' %}" alt="" style="width:100%;">
+      </div>
+
+      <div class="item">
+        <img src="{% static 'users/slider-3.jpg' %}" alt="" style="width:100%;">
+      </div>
+
+      <div class="item">
+        <img src="{% static 'users/slider-4.jpg' %}" alt="" style="width:100%;">
+      </div>
+
+      <div class="item">
+        <img src="{% static 'users/slider-5.jpg' %}" alt="" style="width:100%;">
+      </div>
+
+    </div>
+
+    <!-- Left and right controls -->
+    <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+      <span class="glyphicon glyphicon-chevron-left"></span>
+      {% comment %} <span class="sr-only">Previous</span> {% endcomment %}
+    </a>
+    <a class="right carousel-control" href="#myCarousel" data-slide="next">
+      <span class="glyphicon glyphicon-chevron-right"></span>
+      {% comment %} <span class="sr-only">Next</span> {% endcomment %}
+    </a>
+    </div>
+<br>
+
+    <ul class="nav nav-tabs">
+        <li><a data-toggle="tab" href="#login">Login</a></li>
+        <li class="active"><a data-toggle="tab" href="#menu1">Health Center</a></li>
+        <li><a data-toggle="tab" href="#doctors">Doctors</a></li>
+        <li><a data-toggle="tab" href="#menu3">Facilities</a></li>
+        <li><a data-toggle="tab" href="#menu4">Information</a></li>
+        <li><a data-toggle="tab" href="#administration">Administration</a></li>
+        <li><a data-toggle="tab" href="#menu6">OPD Doctors</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div id="login" class="tab-pane fade">
+                <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+                    <div class="panel panel-info" >
+                        <div class="panel-heading">
+                            <div class="panel-title">Login</div>
+                            <h3>
+                                {%if error_message%} {{error_message}} {%endif%}
+                            </h3>
+                            <div style="float:right; font-size: 80%; position: relative; top:-10px"><a href="{%url 'password_reset'%}">Forgot password?</a></div>
+                        </div>
+
+                        <div style="padding-top:30px" class="panel-body" >
+
+                            <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
+
+                            <form id="loginform" class="form-horizontal" role="form" action="{% url 'users:login_user'%}" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div style="margin-bottom: 25px" class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                    <input id="id_username" type="text" class="form-control" name="username" value="" placeholder="username">
+                                </div>
+
+                                <div style="margin-bottom: 25px" class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                                    <input id="id_password" type="password" class="form-control" name="password" placeholder="password">
+                                </div>
+                                <div style="margin-top:10px" class="form-group">
+                                    <!-- Button -->
+                                    <center>
+                                    <div class="col-sm-14 controls">
+                                        <input type="submit" value="Log In" class="btn btn-primary">
+                                    </div>
+                                    </center>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+        </div>
+        <div id="menu1" class="tab-pane fade in active">
+            <div class="row" style="padding-top:20px;">
+                <div class="col-md-8" >
+                    <h6 class="description" style="font-size: 20px;">WELCOME TO HEALTH CENTER, IIT KANPUR!</h6>
+                    <p style="text-align:justify;font-size: 16px;">
+                        The Health Centre is committed to promoting the health and wellness of the campus community by providing high-quality prevention, education,
+                        and treatment services. The medical, counseling, and health promotion services are designed to help you stay healthy or get better so that you
+                        can minimize disruptions caused by injury and illness. The Health Centre aims to enhance the healthcare experience of the IITK campus community
+                        by providing healthcare with respect, consideration and confidentiality. Please review this website or reach out to the Heath Centre staff for
+                        details of healthcare resources, prevention methods, health education and general healthcare guidance.
+                    </p>
+                </div>
+                <div class="col-md-4" style="background-color:#afb5bd;border-radius:10px;padding:5px;">
+                   <h6 class="description" style="font-size: 20px;color:black;">INFORMATION/UPDATES</h6>
+                    <ul style="font-size: 16px;">
+                        <li>Dr. Shekhar Rastogi will not be available on 13-07-19and he will be available on 15-07-19 from 07:00 pm to 8:30 pm</li>
+                        <li>Dr. Sanjai Rastogi will not be available on 13-07-19</li>
+                        <li>Dr. Alok Bajpai will not be available on 13-07-19</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div id="doctors" class="tab-pane fade">
+            <section class="team">
+                <div class="container">
+                    <div class="row">
+                    <div class="col-md-10 col-md-offset-1">
+                        <div class="col-lg-12">
+                        <div class="row pt-md">
+                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                            <div class="img-box">
+                                <img src="{% static 'users/dr-mamta-vyas.jpg' %}" class="img-responsive">
+                            </div>
+                            <h1>Dr. (Mrs.) Mamta Vyas</h1>
+                            <h2>CMO (Head Health Center)</h2>
+                            <p>MBBS, DGO, Gynaecologist <br>Email: mtvyas@iitk.ac.in<br>Phone: 0512-259-7748 (O) / 0512-259-8423 (R)</p>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                            <div class="img-box">
+                                <img src="{% static 'users/rakesh-chandra.jpg' %}" class="img-responsive">
+                            </div>
+                            <h1>Dr. Rakesh Chandra</h1>
+                            <h2>Institute Medical Advisor</h2>
+                            <p>MBBS. MD (Medicine)<br>Email: rc2005@rediffmail.com</p>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                            <div class="img-box">
+                                <img src="{% static 'users/dr-r-k-jais.jpg'%}" class="img-responsive">
+                            </div>
+                            <h1>Dr. R. K. Jais</h1>
+                            <h2>CMO (NFSG)</h2>
+                            <p>MBBS, Diploma Cardiology<br>Cardiologist<br>Email: jais@iitk.ac.in<br>Phone: 0512-259-6015 (O) / 0512-259-8483 (R)</p>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                            <div class="img-box">
+                                <img src="{% static 'users/dr-s-kishore.jpg'%}" class="img-responsive">
+                            </div>
+                            <h1>Dr. Shailendra Kishore</h1>
+                            <h2>Medical Officer</h2>
+                            <p>MBBS<br>Email: shailk@iitk.ac.in<br>Phone: 0512-259-7764 (O)</p>
+                            </div>
+                            <br><br><br><br><br> <br><br><br><br><br> <br><br><br><br><br>
+                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                            <div class="img-box">
+                                <img src="{% static 'users/ram-kumar-nigam.jpg'%}" class="img-responsive">
+                            </div>
+                            <h1>Dr. Ram Kumar Nigam</h1>
+                            <h2>Medical Officer</h2>
+                            <p>MBBS, PGDGM<br>Email: nram@iitk.ac.in<br>Phone: 0512-259-7787 (O) / 0512-263-0400 (R)</p>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                            <div class="img-box">
+                                <img src="{% static 'users/dr-s-k-mishra.jpg'%}" class="img-responsive">
+                            </div>
+                            <h1>Dr. S. K. Mishra</h1>
+                            <h2>Medical Officer</h2>
+                            <p>BHMS, MD (Homeo)<br>http://www.thehomeoclinic.com/ <br>Email: skumarm@iitk.ac.in<br>Phone: 0512-259-7785 (O) / 0512-257-0827 (R)</p>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                            <div class="img-box">
+                                <img src="{% static 'users/dr-ritu-nigam.jpg'%}" class="img-responsive">
+                            </div>
+                            <h1>Dr. (Mrs.) Ritu Nigam</h1>
+                            <h2>Medical Officer</h2>
+                            <p>MBBS, DGO, IICMCH, Gynaecologist<br>Email: ritun@iitk.ac.in<br>Phone: 0512-259-7752 (O) / 0512-263-0400 (R)</p>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                            <div class="img-box">
+                                <img src="{% static 'users/dr-sutapa-mondal.jpg'%}" class="img-responsive">
+                            </div>
+                            <h1>Dr. Sutapa Mondal</h1>
+                            <h2>Medical Officer</h2>
+                            <p>MBBS<br>Email: sutapa@iitk.ac.in<br>Phone: 0512-259-7787 (O) / 0512-259-8703 (R)</p>
+                            </div>
+                            <br><br><br><br><br> <br><br><br><br><br> <br><br><br><br><br>
+                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                            <div class="img-box">
+                                <img src="{% static 'users/dr-anshu-gupta.jpg'%}" class="img-responsive">
+                            </div>
+                            <h1>Dr. Anshu Gupta</h1>
+                            <h2>Medical Officer</h2>
+                            <p>MBBS<br>Email: agup@iitk.ac.in<br>Phone: 0512-259-7305 (O)</p>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                            <div class="img-box">
+                                <img src="{% static 'users/dr-naveen-kumar-gude.jpg'%}" class="img-responsive">
+                            </div>
+                            <h1>Dr. Naveen Kumar Gude</h1>
+                            <h2>Medical Officer</h2>
+                            <p>MBBS<br>Email: gnaveen@iitk.ac.in <br>Phone: 0512-259-7888 (O)</p>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                            <div class="img-box">
+                                <img src="{% static 'users/dr-rakesh-mishra.jpg'%}" class="img-responsive">
+                            </div>
+                            <h1>Dr. Rakesh Mishra</h1>
+                            <h2>Medical Officer</h2>
+                            <p>MBBS<br>Email: mirakesh@iitk.ac.in<br>Phone: 0512-259-7789 (O)</p>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                            <div class="img-box">
+                                <img src="{% static 'users/dr-sanjay-bhagat.jpg'%}" class="img-responsive">
+                            </div>
+                            <h1>Mr. Sanjay Bhagat</h1>
+                            <h2>Physiotherapist</h2>
+                            <p>MPT (Orthopedic)<br>Email: bsanjay@iitk.ac.in<br>Phone: 0512-259-6407 (O)</p>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div id="menu3" class="tab-pane fade">
+           <div class="row pt-md">
+               <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:180px;">
+                   <h6 class="description" style="font-size:20px;">ECG</h6>
+                   <div class="img-box">
+                   <img src="{% static 'users/egc.jpg' %}" class="img-responsive">
+                   </div>
+               </div>
+               <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:180px;">
+                   <h6 class="description" style="font-size:20px;">PATHOLOGY</h6>
+                   <div class="img-box">
+                   <img src="{% static 'users/Pathology.jpg' %}" class="img-responsive">
+                   </div>
+               </div>
+               <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:180px;">
+                   <h6 class="description" style="font-size:20px;">PHYSIOTHERAPY</h6>
+                   <div class="img-box">
+                   <img src="{% static 'users/physiotherapy.jpg' %}" class="img-responsive">
+                   </div>
+               </div>
+               <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:180px;">
+                   <h6 class="description" style="font-size:20px;">X-RAY</h6>
+                   <div class="img-box">
+                   <img src="{% static 'users/x-ray.jpg' %}" class="img-responsive">
+                   </div>
+               </div>
+               <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:180px;">
+                   <h6 class="description" style="font-size:20px;">DRESSING</h6>
+                   <div class="img-box">
+                   <img src="{% static 'users/dressing.jpg' %}" class="img-responsive">
+                   </div>
+               </div>
+               <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:180px;">
+                   <h6 class="description" style="font-size:20px;">LABOUR ROOM</h6>
+                   <div class="img-box">
+                   <img src="{% static 'users/labour-room.jpg' %}" class="img-responsive">
+                   </div>
+               </div>
+               <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:180px;">
+                   <h6 class="description" style="font-size:20px;">SPECIALITY CLINICS</h6>
+                   <div class="img-box">
+                   <img src="{% static 'users/specialty-clinics.jpg' %}" class="img-responsive">
+                   </div>
+               </div>
+           </div>
+        </div>
+        <div id="menu4" class="tab-pane fade">
+            <div class="row">
+                <div class="col-md-6">
+                    <br><br>
+                    <h6 class="description" style="font-size:20px;">LINKS</h6>
+                    <ul style="font-size:16px;">
+                        <li><a href="http://www.iitk.ac.in/hc/user-s-guide">User's Guide</a></li>
+                        <li><a href="http://www.iitk.ac.in/hc/medical-reimbursement">Medical Reimbursment</a></li>
+                        <li><a href="http://www.iitk.ac.in/hc/data/IMPORTANT-INFORMATION-Medical-Certificate.pdf">Medical Certificates</a></li>
+                        <li>IITK Approved Specialist Hospitals, Nursing Homes and Diagnostic Centres:</li>
+                            <ul>
+                                <li><a href="http://www.iitk.ac.in/hc/data/Empaneled-List-of-Hospitals-(21-01-2017).pdf">In Kanpur</a></li>
+                                <li><a href="http://www.iitk.ac.in/hc/data/IITK-Approval-Specialist-hospitals-Nursery-home-diagnostic-center.pdf">Outside Kanpur</a></li>
+                            </ul>
+                        <li><a href="http://www.iitk.ac.in/hc/data/registraroff_orders/OO-HEALTH%20CENTRE.pdf">Admissibility of Health Centre Services to Different Category of Users</a></li>
+                        <li><a href="http://www.iitk.ac.in/hc/data/revised_rates.pdf">IIT Approved Package Rate of Different Procedure Applicable Only to Regency Hospital</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <br><br>
+                    <h6 class="description" style="font-size:20px;">FORMS</h6>
+                    <ul style="font-size:16px;">
+                        <li><a href="http://www.iitk.ac.in/hc/data/hospital_form.pdf">Medical Reimbursment Form</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div id="administration" class="tab-pane fade">
+            <section class="team" style="padding-bottom: 0px;padding-top: 20px;">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-10 col-md-offset-1">
+                            <div class="col-lg-12">
+                            <h6 class="description" style="font-size:20px;">HEALTH CENTER USER COMMITTE</h6>
+                            <div class="row pt-md">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                                <div class="img-box">
+                                    <img src="{% static 'users/braj-bhushan.jpg' %}" class="img-responsive">
+                                </div>
+                                <h1>Prof. Braj Bhushan</h1>
+                                <h2>Chairman</h2>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                                <div class="img-box">
+                                    <img src="{% static 'users/jayandharan-g-rao.jpg' %}" class="img-responsive">
+                                </div>
+                                <h1>Prof. J.G. Rao</h1>
+                                <h2>Member of Faculty</h2>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                                <div class="img-box">
+                                    <img src="{% static 'users/s-anantha-ramakrishna.jpg' %}" class="img-responsive">
+                                </div>
+                                <h1>Prof. S.A. Ramakrishna</h1>
+                                <h2>Faculty Forum Representative</h2>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                                <div class="img-box">
+                                    <img src="{% static 'users/dr-mamta-vyas.jpg' %}" class="img-responsive">
+                                </div>
+                                <h1>Dr. Mamta Vyas</h1>
+                                <h2>Member(In-Charge, Health Center)</h2>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                                <div class="img-box">
+                                    <img src="{% static 'users/ram-kumar-nigam.jpg' %}" class="img-responsive">
+                                </div>
+                                <h1>Dr. R.K. Nigam</h1>
+                                <h2>Member(CMO-NFSG)</h2>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                                <div class="img-box">
+                                    <img src="{% static 'users/rakesh-chandra.jpg' %}" class="img-responsive">
+                                </div>
+                                <h1>Dr. Rakesh Chandra</h1>
+                                <h2>Member(Medical Advisor)</h2>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                                <div class="img-box">
+                                    <img src="{% static 'users/munish-malik.jpg' %}" class="img-responsive">
+                                </div>
+                                <h1>Mr. Munish Malik, Finance</h1>
+                                <h2>Member(Group 'A' Officer)</h2>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                                <div class="img-box">
+                                    <img src="{% static 'users/dp-dixit.jpg' %}" class="img-responsive">
+                                </div>
+                                <h1>Mr. D.P. Dixit</h1>
+                                <h2>Member(Rep. from Gp. 'B'/'C'/'D')</h2>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                                <div class="img-box">
+                                    <img src="{% static 'users/srivastava.jpg' %}" class="img-responsive">
+                                </div>
+                                <h1>Mr. Dileep Shrivastava</h1>
+                                <h2>Member(Secretary)</h2>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="team" style="padding-bottom: 0px;padding-top: 20px;">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-10 col-md-offset-1">
+                            <div class="col-lg-12">
+                            <h6 class="description" style="font-size:20px;">NURSING STAFF</h6>
+                            <div class="row pt-md">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                                <div class="img-box">
+                                    <img src="{% static 'users/sangeeta-maclay.jpg' %}" class="img-responsive">
+                                </div>
+                                <h1>Ms. Sangeeta Maclay</h1>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                                <div class="img-box">
+                                    <img src="{% static 'users/nirmila-singh.jpg' %}" class="img-responsive">
+                                </div>
+                                <h1>Ms. N.P. Singh</h1>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                                <div class="img-box">
+                                    <img src="{% static 'users/Sunita-Rari-Pal.jpg' %}" class="img-responsive">
+                                </div>
+                                <h1>Ms. Sunita Raria</h1>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                                <div class="img-box">
+                                    <img src="{% static 'users/richa-chandan-darbari.jpg' %}" class="img-responsive">
+                                </div>
+                                <h1>Mrs. Richa Chandan</h1>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                                <div class="img-box">
+                                    <img src="{% static 'users/savitri.jpg' %}" class="img-responsive">
+                                </div>
+                                <h1>Mrs. Savitri</h1>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                                <div class="img-box">
+                                    <img src="{% static 'users/blank-f.png' %}" class="img-responsive">
+                                </div>
+                                <h1>Ms. Vimla Raj</h1>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                                <div class="img-box">
+                                    <img src="{% static 'users/blank-f.png' %}" class="img-responsive">
+                                </div>
+                                <h1>Ms. Dolly Singh</h1>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section><section class="team" style="padding-bottom: 0px;padding-top: 20px;">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-10 col-md-offset-1">
+                            <div class="col-lg-12">
+                            <h6 class="description" style="font-size:20px;">HEALTH CENTER OFFICE</h6>
+                            <div class="row pt-md">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                                <div class="img-box">
+                                    <img src="{% static 'users/u-s-rawat.jpg' %}" class="img-responsive">
+                                </div>
+                                <h1>Mr. U.S. Rawat</h1>
+                                <h2>Superintendent(Health Center Office)<br></h2>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                                <div class="img-box">
+                                    <img src="{% static 'users/chunni-lal.jpg' %}" class="img-responsive">
+                                </div>
+                                <h1>Mr. Chunni Lal</h1>
+                                <h2>Attendant<br></h2>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section><section class="team" style="padding-bottom: 0px;padding-top: 20px;">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-10 col-md-offset-1">
+                            <div class="col-lg-12">
+                            <h6 class="description" style="font-size:20px;">PHARMACIST</h6>
+                            <div class="row pt-md">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                                <div class="img-box">
+                                    <img src="{% static 'users/parmod.jpg' %}" class="img-responsive">
+                                </div>
+                                <h1>Mr. Parmod</h1>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                                <div class="img-box">
+                                    <img src="{% static 'users/vipin-kumar.jpg' %}" class="img-responsive">
+                                </div>
+                                <h1>Mr. Vipin Kumar Katiyar</h1>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                                <div class="img-box">
+                                    <img src="{% static 'users/p-s-porwal.jpg' %}" class="img-responsive">
+                                </div>
+                                <h1>Mr. P.S. Porwal</h1>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="team" style="padding-bottom: 0px;padding-top: 20px;">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-10 col-md-offset-1">
+                            <div class="col-lg-12">
+                            <h6 class="description" style="font-size:20px;">HEALTH CENTER STORE</h6>
+                            <div class="row pt-md">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                                <div class="img-box">
+                                    <img src="{% static 'users/srivastava.jpg' %}" class="img-responsive">
+                                </div>
+                                <h1>Mr. Dileep Shrivastava</h1>
+                                <h2>Superintendant<br></h2>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                                <div class="img-box">
+                                    <img src="{% static 'users/s-b-thapa.jpg' %}" class="img-responsive">
+                                </div>
+                                <h1>Mr. S.B. Thapa</h1>
+                                <h2>Senior Assistant<br></h2>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="team" style="padding-bottom: 0px;padding-top: 20px;">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-10 col-md-offset-1">
+                            <div class="col-lg-12">
+                            <h6 class="description" style="font-size:20px;">X-RAY</h6>
+                            <div class="row pt-md">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                                <div class="img-box">
+                                    <img src="{% static 'users/amit-dass.jpg' %}" class="img-responsive">
+                                </div>
+                                <h1>Mr. Amit Das</h1>
+                                <h2>X-Ray Technician<br></h2>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="team" style="padding-bottom: 0px;padding-top: 20px;">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-10 col-md-offset-1">
+                            <div class="col-lg-12">
+                            <h6 class="description" style="font-size:20px;">DRIVERS</h6>
+                            <div class="row pt-md">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                                <div class="img-box">
+                                    <img src="{% static 'users/j-k-singh.jpg' %}" class="img-responsive">
+                                </div>
+                                <h1>Mr. J.K. Singh</h1>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                                <div class="img-box">
+                                    <img src="{% static 'users/a-k-dwivedi.jpg' %}" class="img-responsive">
+                                </div>
+                                <h1>Mr. A.K. Dwivedi</h1>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="team" style="padding-bottom: 0px;padding-top: 20px;">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-10 col-md-offset-1">
+                            <div class="col-lg-12">
+                            <h6 class="description" style="font-size:20px;">DRESSER</h6>
+                            <div class="row pt-md">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                                <div class="img-box">
+                                    <img src="{% static 'users/s-p-singh.jpg' %}" class="img-responsive">
+                                </div>
+                                <h1>Mr. Satya Pal Singh</h1>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                                <div class="img-box">
+                                    <img src="{% static 'users/dresser-chandel.jpg' %}" class="img-responsive">
+                                </div>
+                                <h1>Mr. H.B. Singh Chandel</h1>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                                <div class="img-box">
+                                    <img src="{% static 'users/raj-kamal-sharma.jpg' %}" class="img-responsive">
+                                </div>
+                                <h1>Mr. Raj Kamal Sharma</h1>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                                <div class="img-box">
+                                    <img src="{% static 'users/suresh-chandra.jpg' %}" class="img-responsive">
+                                </div>
+                                <h1>Mr. Suresh Chandra</h1>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="team" style="padding-bottom: 0px;padding-top: 20px;">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-10 col-md-offset-1">
+                            <div class="col-lg-12">
+                            <h6 class="description" style="font-size:20px;">AYA/HELPERS</h6>
+                            <div class="row pt-md">
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                                <div class="img-box">
+                                    <img src="{% static 'users/hemant-kumar.jpg' %}" class="img-responsive">
+                                </div>
+                                <h1>Mr. Hemant Kumar</h1>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                                <div class="img-box">
+                                    <img src="{% static 'users/sumitra.jpg' %}" class="img-responsive">
+                                </div>
+                                <h1>Mrs. Sumitra</h1>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                                <div class="img-box">
+                                    <img src="{% static 'users/parwati.jpg' %}" class="img-responsive">
+                                </div>
+                                <h1>Mr. Parwati</h1>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 profile" style="height:160px;">
+                                <div class="img-box">
+                                    <img src="{% static 'users/bodami.jpg' %}" class="img-responsive">
+                                </div>
+                                <h1>Mrs. Bodami</h1>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div id="menu6" class="tab-pane fade">
+            <div class="row">
+            <br><br>
+            <h6 class="description" style="font-size:20px;">Skin Specialists</h6>
+            <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Day</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Dr. Gopal Singh Dhanik</td>
+                <td>Monday</td>
+                <td>5:00 pm to 7:00 pm</td>
+            </tr>
+            <tr>
+                <td>Dr. Pravina Patel</td>
+                <td>Thursday</td>
+                <td>12:00 pm to 2:00 pm</td>
+            </tr>
+            </tbody>
+            </table>
+            <h6 class="description" style="font-size:20px;">Pediatrics</h6>
+            <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Day</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Dr. Vivek Saxena</td>
+                <td>Thursday</td>
+                <td>9:00 am to 10:30 am</td>
+            </tr>
+            <tr>
+                <td>Dr. K. K. Dokania</td>
+                <td>Tuesday</td>
+                <td>6:00 pm to 8:00 pm</td>
+            </tr>
+            </tbody>
+            </table>
+            <h6 class="description" style="font-size:20px;">Orthopedics</h6>
+            <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Day</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Dr. Nadeem Faruqui</td>
+                <td>Thursday</td>
+                <td>12:00 pm to 2:00 pm</td>
+            </tr>
+            <tr>
+                <td>Dr. Sanjai Rastogi</td>
+                <td>Saturday</td>
+                <td>11:00 am to 12:30 pm</td>
+            </tr>
+            </tbody>
+            </table>
+            <h6 class="description" style="font-size:20px;">Psychiatrists</h6>
+            <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Day</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Dr. Alok Bajpai</td>
+                <td>Saturday</td>
+                <td>10:00 am to 11:00 am</td>
+            </tr>
+            </tbody>
+            </table>
+            <h6 class="description" style="font-size:20px;">General Medicine</h6>
+            <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Day</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Dr. Rakesh Chandra</td>
+                <td>Saturday</td>
+                <td>10:00 am to 12:00 noon</td>
+            </tr>
+            </tbody>
+            </table>
+            <h6 class="description" style="font-size:20px;">ENT Surgeons</h6>
+            <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Day</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Dr. Rajan Bhargava</td>
+                <td>Saturday</td>
+                <td>4:00 pm to 5:00 pm</td>
+            </tr>
+            </tbody>
+            </table>
+            <h6 class="description" style="font-size:20px;">Gynaecologists</h6>
+            <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Day</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Dr. Shubha Agarwal</td>
+                <td>Saturday</td>
+                <td>3:30 pm to 6:30 pm</td>
+            </tr>
+            </tbody>
+            </table>
+            <h6 class="description" style="font-size:20px;">Opthalmologists</h6>
+            <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Day</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Dr. Shekhar Rastogi</td>
+                <td>Saturday</td>
+                <td>10:00 am to 12:00 noon</td>
+            </tr>
+            <tr>
+                <td>Dr. Ashish Agrawal</td>
+                <td>Tuesday</td>
+                <td>5:00 pm to 7:00 pm</td>
+            </tr>
+            </tbody>
+            </table>
+            <h6 class="description" style="font-size:20px;">Dentists</h6>
+            <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Day</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Dr. D. K. Jaipuria</td>
+                <td>Tuesday<br>Friday</td>
+                <td>4:00 pm to 5:00 pm<br>12:00 pm to 1:30 pm</td>
+            </tr>
+            </tbody>
+            </table>
+            <h6 class="description" style="font-size:20px;">Cardiologists</h6>
+            <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Day</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Dr. S. S. Singhal</td>
+                <td>Wednesday</td>
+                <td>3:30 pm to 5:00 pm</td>
+            </tr>
+            </tbody>
+            </table>
+            <h6 class="description" style="font-size:20px;">Endodontists</h6>
+            <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Day</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Dr. Bhupendra Kumar</td>
+                <td>Monday, Wednesday<br>Saturday</td>
+                <td>9:30 am to 11:30 am<br>5:00 pm till OPD gets over</td>
+                <td></td>
+            </tr>
+            </tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+</div>
+<hr width="75%">
+{% endblock %}
