@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .forms import AppointmentForm
+from .forms import *
 from .models import Appointment
 from Patient.models import Patient
 from students.models import students
@@ -57,7 +57,7 @@ def clearList(request):
 
 @login_required(login_url="/")
 def approve(request, app_id):
-    form_class = AppointmentForm
+    form_class = ApproveForm
     app = get_object_or_404(Appointment, pk=app_id)
     form = form_class(request.POST or None, instance=app)
     if form.is_valid():

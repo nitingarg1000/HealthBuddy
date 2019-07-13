@@ -3,6 +3,7 @@ from Doctor.models import PresMedicine, Prescription
 from Patient.models import Patient
 from .models import *
 from .forms import PharQuantity
+from django.contrib.auth import authenticate
 # Create your views here.
 
 
@@ -93,4 +94,12 @@ def change_quantity(request, med_id, patient_roll, pres_id):
 
     return render(request, template_name, context)
 
+def verify(request, patient_roll, ):
+    password = request.POST['password']
+    patient = get_object_or_404(Patient, pk=patient_roll)
+    username = patient.user.username
+    verified_user = authenticate(username=username, password=password)
 
+    if verified_user == patient:
+        #Do something
+        return 

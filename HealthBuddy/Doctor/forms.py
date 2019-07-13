@@ -1,6 +1,5 @@
 from django import forms
-from .models import Prescription, PresMedicine
-from Doctor.models import *
+from .models import *
 
 class PrescriptionForm(forms.ModelForm):
 

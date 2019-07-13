@@ -131,13 +131,21 @@
                                                         </tr>
                                                         <tr style="border-color: white;">
                                                             <td  style="border-color: white;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                                                            <td style="border-color: white; align:left;"><b>Tests</b></td>
+                                                            <td style="border-color: white; align:left;"><b>Vitals</b></td>
                                                             {%if pres.testpres_set.all %}
                                                             <td  style="border-color: white;">{%for t in pres.testpres_set.all %}{{ t.test }}<br>{%endfor%}</td>
                                                             <td  style="border-color: white;">{%for t in pres.testpres_set.all %}{{ t.value }}<br>{%endfor%}</td>
                                                             {%else%}
                                                             <td>NA</td>
                                                             {%endif%}
+                                                            <td  style=" border-color: white;"></td> 
+                                                        </tr>
+                                                        <tr style="border-color: white;">
+                                                            <td  style="border-color: white;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                                                            <td style="border-color: white; align:left;"><b>Test</b></td>
+                                                            {%if pres.tests.all %}
+                                                            <td  style="border-color: white;">{% for t in pres.tests.all %}{{t}}<br>{%endif%}</td>
+                                                            <td  style=" border-color: white;"></td>
                                                         </tr>
                                                     </table>
                                                 </div>

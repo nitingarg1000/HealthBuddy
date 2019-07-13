@@ -15,6 +15,7 @@
         color: #white;
     }
 </style>
+
 {%endblock%}
 {%block body%}
 
@@ -46,11 +47,19 @@
                       <span class="" aria-hidden="true"></span>&nbsp; {{request.user.first_name}}
                   </a>
               </li>
+                {% if request.user.is_authenticated %}
                 <li>
                     <a href="{% url 'users:logout' %}">
                         <span class="glyphicon glyphicon-off" aria-hidden="true"></span>&nbsp; Logout
                     </a>
                 </li>
+                {%else%}
+                <li>
+                    <a href="#login">
+                        <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp; Login
+                    </a>
+                </li>
+                {%endif%}
             </ul>
         </div>
 

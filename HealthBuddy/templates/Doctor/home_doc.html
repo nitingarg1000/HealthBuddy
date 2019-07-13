@@ -6,6 +6,12 @@
 <link href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 <script  src="{% static 'Doctor/home_jquery.js' %}"></script>
 <link rel="stylesheet" type="text/css" href="/static/Doctor/home.css" />
+{% comment %} 
+<script>
+    window.setTimeout(function () {
+    location.href = "{%url 'users:redireect_home'%}";
+    }, 5000);   
+</script> {% endcomment %}
 
 {% endblock %}
 {% block body %}

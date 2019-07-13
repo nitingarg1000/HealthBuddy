@@ -44,6 +44,7 @@ def redirect_ref_form(request, patient_roll, pres_id=None):
             p.patient = patient
             p.med_added = True
             p.save()
+            pres_form.save_m2m()
             current_time = datetime.datetime.now()
             det = PresDetails(date=current_time, pres=p, doctor=request.user.doctor)
             det.save()
@@ -52,6 +53,7 @@ def redirect_ref_form(request, patient_roll, pres_id=None):
         else:
             p = pres_form.save(commit=False)
             p.save()
+            pres_form.save_m2m()
             current_time = datetime.datetime.now()
             det = PresDetails(date=current_time, pres=p, doctor=request.user.doctor)
             det.save()
@@ -92,6 +94,7 @@ def save_pres(request, patient_roll, pres_id=None, end=None):
             p.med_added = True
 
             p.save()
+            pres_form.save_m2m()
             # current_time = datetime.datetime.now()
             # det = PresDetails(date=current_time, pres=p, doctor=request.user.doctor)
             # det.save()
@@ -107,6 +110,7 @@ def save_pres(request, patient_roll, pres_id=None, end=None):
         else:
             p = pres_form.save(commit=False)
             p.save()
+            pres_form.save_m2m()
             current_time = datetime.datetime.now()
             time = PresDetails(date=current_time, pres=p, doctor=request.user.doctor)
             time.save()
@@ -145,6 +149,7 @@ def delete_med(request, patient_roll, pres_id, med_id):
     if pres_form.is_valid():
         p = pres_form.save(commit=False)
         p.save()
+        pres_form.save_m2m()
         return render(request, template_name,
                       {'pres_form': pres_form, 'med_form': med_form, 'pres': p, 'patient': patient,
                        'error_message': 'Medicine removed'})
@@ -184,6 +189,7 @@ def add_med(request, patient_roll, pres_id=None):
             p.med_added = True
             # p.app
             p.save()
+            pres_form.save_m2m()
 
             m = med_form.save(commit=False)
             m.prescription = p
@@ -194,6 +200,7 @@ def add_med(request, patient_roll, pres_id=None):
         else:
             p = pres_form.save(commit=False)
             p.save()
+            pres_form.save_m2m()
 
             m = med_form.save(commit=False)
             m.prescription = p
